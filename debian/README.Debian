@@ -1,0 +1,64 @@
+bitcoin-core for DWDC
+=====================
+
+This is a DWDC build. It is NOT an upstream Bitcoin Core release.
+
+Upstream did not build it, did not sign it, and is not responsible for
+it. It is built from the upstream release tag by DWDC, signed with the
+DWDC APT key, and it carries the patch listed below. Report problems
+with this package to DWDC, not to the Bitcoin Core project.
+
+Source
+------
+
+Upstream tag:  v31.1
+Packaging:     DarkWebDivingClub/bitcoin-core, branch
+               packaging/ubuntu/resolute
+Patch branch:  dwdc/signet-blocktime
+
+Everything outside debian/ and the patch below is the upstream tag,
+unmodified. You can verify that:
+
+    git clone https://github.com/bitcoin/bitcoin
+    git -C bitcoin diff v31.1 <this-source> -- . ':(exclude)debian'
+
+Patches applied
+---------------
+
+1. "Allow configuring target block time for a signet"
+   Author:  benthecarman <benthecarman@live.com>
+   Origin:  https://github.com/bitcoin/bitcoin/pull/27446
+            (proposed to Bitcoin Core, closed unmerged 2024-01-10)
+            Carried by Bitcoin Knots as d8434da3c1.
+   Size:    4 files, 12 insertions, 1 deletion.
+
+   Adds -signetblocktime, so a custom signet can target a block time
+   other than ten minutes. Without it, a signet mined faster raises its
+   own difficulty every 2016 blocks until it drifts back to ten-minute
+   blocks, because the target spacing is compiled into SigNetParams.
+
+   Scope: signet only. Every line it changes is inside SigNetParams,
+   behind a std::optional that stays empty unless -signetblocktime is
+   passed, which itself requires -signetchallenge. Mainnet, testnet and
+   regtest use separate parameter classes and are untouched. Verified:
+   stock and patched bitcoind produce identical genesis hashes on
+   mainnet, the default signet, and regtest, and the only difference in
+   the whole option list is the new -signetblocktime entry.
+
+   Consequence: this build can follow custom signets that stock Bitcoin
+   Core cannot. The reverse is the problem worth knowing about -- a
+   stock node pointed at such a chain does not error, it forks.
+
+   contrib/signet/miner additionally gains --block-interval, since it
+   otherwise paces at ten minutes regardless of what the chain targets.
+   That script is not shipped in this package.
+
+What the signature attests
+--------------------------
+
+That DWDC built this package from the upstream tag named above plus the
+patch named above. It is not a reproducible build. It does not attest
+that these binaries match those published by the Bitcoin Core project --
+they do not, because of the patch.
+
+ -- DWDC <apt@dwdc.club>

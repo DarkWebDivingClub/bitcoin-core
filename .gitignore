@@ -27,3 +27,4 @@ target/
 /guix-build-*
 
 /ci/scratch/
+obj-x86_64-linux-gnu/

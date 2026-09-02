@@ -1,0 +1,9 @@
+# dpkg-buildpackage leaves its working state in debian/. None of it
+# belongs in the repo -- the dbgsym tree alone runs to well over 100 MB
+# of .debug files, which GitHub rejects at push time.
+.debhelper/
+files
+debhelper-build-stamp
+*.debhelper.log
+*.substvars
+/bitcoin-core/
