@@ -17,13 +17,25 @@ Homepage: https://bitcoincore.org/
 Package: bitcoin-core
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Bitcoin Core server binaries
- Bitcoin Core, built from the upstream release tag with no local patches.
+Description: Bitcoin Core server binaries (DWDC signet build)
+ Bitcoin Core, built from the upstream release tag with one local patch.
  .
  Contains the server components only: bitcoind, bitcoin-cli and
  bitcoin-util. The GUI and the test binaries are not built.
  .
+ LOCAL PATCH: adds -signetblocktime, which lets the difficulty adjustment
+ target a chosen block time on a custom signet. Without it, a signet
+ mined faster than ten minutes retargets upward every 2016 blocks until
+ it drifts back to ten-minute blocks. The patch is benthecarman's,
+ offered to Bitcoin Core as PR #27446 and closed unmerged in January
+ 2024; Bitcoin Knots carries it as d8434da3c1. It touches signet chain
+ parameters only and changes nothing on mainnet, testnet or regtest.
+ .
+ This means the package is NOT stock Bitcoin Core. A node built from the
+ upstream tag alone cannot follow a signet that uses a non-default block
+ time, which is the same tradeoff Mutinynet makes.
+ .
  Built from source by DWDC for testing and development. The signature on
- this package attests that DWDC built it from the named upstream tag; it
- is not a reproducible build and does not attest that the binaries match
- those published by the Bitcoin Core project.
+ this package attests that DWDC built it from the named upstream tag plus
+ the patch above; it is not a reproducible build and does not attest that
+ the binaries match those published by the Bitcoin Core project.

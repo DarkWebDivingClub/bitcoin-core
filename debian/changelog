@@ -1,3 +1,14 @@
+bitcoin-core (31.1-1+dwdc1) resolute; urgency=medium
+
+  * Add benthecarman's -signetblocktime patch (Bitcoin Core PR #27446,
+    closed unmerged; carried by Bitcoin Knots as d8434da3c1). Needed for
+    btc.signet.dwdc.club to hold sixty-second blocks: Core's signet
+    retargets toward its hardcoded ten-minute spacing otherwise.
+  * Package is consequently no longer a zero-patch build of upstream.
+    The description states the patch and its consequence.
+
+ -- DWDC <apt@dwdc.club>  Wed, 02 Sep 2026 13:40:00 +0200
+
 bitcoin-core (31.1-1) resolute; urgency=medium
 
   * Bitcoin Core 31.1, built from the upstream v31.1 tag with no patches.
