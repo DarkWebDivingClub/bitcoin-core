@@ -1,0 +1,5 @@
+bitcoin-core (31.1-1) resolute; urgency=medium
+
+  * Bitcoin Core 31.1, built from the upstream v31.1 tag with no patches.
+
+ -- DWDC <apt@dwdc.club>  Wed, 02 Sep 2026 12:00:00 +0200
