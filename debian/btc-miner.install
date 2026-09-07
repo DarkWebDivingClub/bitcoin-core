@@ -1,0 +1,2 @@
+contrib/signet/miner            usr/share/btc-miner/contrib/signet
+test/functional/test_framework  usr/share/btc-miner/test/functional

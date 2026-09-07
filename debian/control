@@ -39,3 +39,32 @@ Description: Bitcoin Core server binaries (DWDC signet build)
  this package attests that DWDC built it from the named upstream tag plus
  the patch above; it is not a reproducible build and does not attest that
  the binaries match those published by the Bitcoin Core project.
+
+Package: btc-miner
+Architecture: all
+Depends: ${misc:Depends},
+         python3,
+         bitcoin-core (= ${binary:Version})
+Description: signet block producer for Bitcoin Core (DWDC signet build)
+ contrib/signet/miner from the Bitcoin Core source tree, packaged so that
+ a signet can be mined from an installed system rather than from a source
+ checkout.
+ .
+ Signet blocks carry a signature made with the chain's challenge key, and
+ Bitcoin Core has no RPC that produces one. Without this script a node
+ installed from a package cannot mine the chain it is configured for.
+ .
+ The script does no hashing of its own. It drives the node from outside:
+ getblocktemplate for the candidate, walletprocesspsbt for the challenge
+ signature, bitcoin-util grind for the proof-of-work, and submitblock to
+ publish. The challenge key therefore lives in a bitcoind wallet on the
+ mining host.
+ .
+ It is shipped byte-identical to the source tree, together with the
+ functional test framework modules it imports. Those modules are test
+ code, which is why this is a separate package: installing bitcoin-core
+ does not bring them in.
+ .
+ The version is pinned to bitcoin-core because the script imports that
+ version's own test framework. A miner from one version driving a node
+ from another is not a supported combination.

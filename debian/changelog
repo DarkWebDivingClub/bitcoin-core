@@ -1,3 +1,26 @@
+bitcoin-core (31.1-1+dwdc3) resolute; urgency=medium
+
+  * New binary package btc-miner: contrib/signet/miner, which the
+    bitcoin-core package has never shipped. Signet blocks carry a
+    signature made with the chain's challenge key and there is no RPC
+    that produces one, so until now a chain installed purely from this
+    package could not mine. Found while bringing up an internal signet
+    from packages alone.
+  * btc-miner is Architecture: all. The script does no hashing; it drives
+    the node through bitcoin-cli and bitcoin-util grind, both of which
+    bitcoin-core already ships.
+  * The script is installed byte-identical to the source tree. It locates
+    its imports with realpath, so the layout under /usr/share/btc-miner
+    preserves the source tree's relative arrangement and /usr/bin/btc-miner
+    is a symlink into it. No patched copy is carried.
+  * It is a separate package because it ships functional test framework
+    modules, which a node installation should not pull in.
+  * Its version is pinned to bitcoin-core: the script imports that
+    version's own test framework.
+  * No change to the bitcoin-core binaries from 31.1-1+dwdc2.
+
+ -- Rene Malmgren <duke_h3@dwdc.club>  Sun, 07 Sep 2026 12:00:00 +0200
+
 bitcoin-core (31.1-1+dwdc2) resolute; urgency=medium
 
   * Add debian/README.Debian, installed to /usr/share/doc/bitcoin-core/,
