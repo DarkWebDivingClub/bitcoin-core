@@ -1,3 +1,22 @@
+bitcoin-core (31.1-1+dwdc4) resolute; urgency=medium
+
+  * btc-miner: disclose the local patch. The shipped script is upstream's
+    contrib/signet/miner with one local change adding --block-interval,
+    the miner-side counterpart to the -signetblocktime patch bitcoin-core
+    carries. 31.1-1+dwdc3 said the script was shipped byte-identical to
+    the source tree, which was true and did not say that the source tree
+    is patched. bitcoin-core has documented its own patch since
+    31.1-1+dwdc2 and this package should have done the same from the
+    start.
+  * btc-miner: add README.Debian, installed to
+    /usr/share/doc/btc-miner/. It records the patch and its origin, and
+    warns that signetblocktime and --block-interval must agree: nothing
+    enforces the pairing, and a mismatch does not fail, it just makes the
+    chain retarget toward a spacing nobody asked for.
+  * No change to any shipped binary or to the miner script itself.
+
+ -- Rene Malmgren <duke_h3@dwdc.club>  Sun, 07 Sep 2026 19:45:00 +0200
+
 bitcoin-core (31.1-1+dwdc3) resolute; urgency=medium
 
   * New binary package btc-miner: contrib/signet/miner, which the

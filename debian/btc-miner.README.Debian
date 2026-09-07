@@ -1,0 +1,78 @@
+btc-miner for Debian
+====================
+
+What this is
+------------
+
+contrib/signet/miner from the Bitcoin Core source tree, packaged so a
+signet can be mined from an installed system rather than a source
+checkout. The bitcoin-core package has never shipped it, and there is no
+RPC that replaces it: signet blocks carry a signature made with the
+chain's challenge key, and Core has no call that produces one.
+
+It does no hashing. It drives the node from outside:
+
+  getblocktemplate    the candidate block
+  walletprocesspsbt   the challenge signature
+  bitcoin-util grind  the proof-of-work
+  submitblock         publication
+
+The challenge key therefore lives in a bitcoind wallet on the mining
+host. The host that mines is the host holding the key that defines the
+chain.
+
+The local patch
+---------------
+
+The script is upstream's, MIT licensed, Copyright (c) 2020-present The
+Bitcoin Core developers, with one local change:
+
+  signet: let the miner target the chain's block interval
+  Rene Malmgren <duke_h3@dwdc.club>
+
+Upstream hardcodes the target spacing:
+
+  INTERVAL = 600.0*2016/2015
+
+The patch replaces that with a --block-interval argument defaulting to
+the same 600 seconds, so behaviour is unchanged unless the argument is
+given. It is the miner-side counterpart to the -signetblocktime patch
+carried by bitcoin-core; see that package's README.Debian.
+
+The two must agree
+------------------
+
+A chain configured with
+
+  signetblocktime=60
+
+must be mined with
+
+  btc-miner ... generate --block-interval=60
+
+Nothing enforces this. The miner paces itself from --block-interval and
+the node's difficulty adjustment expects blocks to arrive at the rate
+-signetblocktime names. If they disagree the chain still mines; it just
+drifts away from its own target, retargeting every 2016 blocks toward a
+spacing nobody asked for.
+
+Layout
+------
+
+The script is installed unmodified, under a directory that preserves the
+source tree's relative arrangement:
+
+  /usr/share/btc-miner/contrib/signet/miner
+  /usr/share/btc-miner/test/functional/test_framework/
+
+It locates its imports with realpath, so /usr/bin/btc-miner is a symlink
+into that tree and the script needs no patching to find its framework.
+Nothing here is a modified copy of anything.
+
+Version pin
+-----------
+
+This package depends on exactly the bitcoin-core version it was built
+from, because the script imports that version's own functional test
+framework. A miner from one version driving a node from another is not a
+supported combination.

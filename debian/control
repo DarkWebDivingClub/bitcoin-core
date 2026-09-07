@@ -65,6 +65,19 @@ Description: signet block producer for Bitcoin Core (DWDC signet build)
  code, which is why this is a separate package: installing bitcoin-core
  does not bring them in.
  .
+ LOCAL PATCH: the script is upstream's contrib/signet/miner with one
+ local change, adding --block-interval. Upstream hardcodes a ten-minute
+ target; this makes it settable, and it is the miner-side counterpart to
+ the -signetblocktime patch carried by bitcoin-core. Without it a custom
+ signet can be configured for a block time the miner has no way to aim
+ for.
+ .
+ THE TWO MUST AGREE. A chain configured with signetblocktime=60 must be
+ mined with --block-interval=60. The miner paces itself from that value
+ and the node's difficulty adjustment expects blocks at that rate, so a
+ mismatch is not rejected by anything -- it just makes the chain drift
+ from its own target.
+ .
  The version is pinned to bitcoin-core because the script imports that
  version's own test framework. A miner from one version driving a node
  from another is not a supported combination.
